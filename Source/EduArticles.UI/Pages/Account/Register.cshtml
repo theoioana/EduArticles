@@ -1,0 +1,51 @@
+﻿@page 
+@model EduArticles.UI.Pages.Account.RegisterModel
+@inject IStringLocalizer<EduArticles.UI.Pages.Account.RegisterModel> localizer
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row">
+    <div class="col d-flex align-items-center justify-content-center">
+        <div class="card text-white bg-primary mb-3" style="min-width: 30rem; max-width: 60rem;">
+            <div class="card-header"> @localizer["Register"]</div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label mt-4">@localizer["Email"]</label>
+                        <input class="form-control" asp-for="Email" placeholder="@localizer["Email"]">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserName" class="form-label mt-4">@localizer["UserName"]</label>
+                        <input class="form-control" asp-for="UserName" placeholder="@localizer["Email"]">
+                    </div>                    
+                    <div class="form-group">
+                        <label class="form-label mt-4" asp-for="Password">@localizer["Password"]</label>
+                        <input class="form-control" asp-for="Password" placeholder="@localizer["Password"]" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label mt-4" asp-for="ConfirmPassword">@localizer["ConfirmPassword"]</label>
+                        <input class="form-control" asp-for="ConfirmPassword" placeholder="@localizer["ConfirmPassword"]" />
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <div class="row">
+                            <div asp-validation-summary="All"></div>
+                            <div class="col-12">
+                                <button class="btn btn-light w-100" type="submit">
+                                    @localizer["Register"]
+                                </button>
+                            </div>
+                            <div class="col-12 d-flex align-items-center justify-content-center text-light">
+                                @localizer["Or"]
+                            </div>
+                            <div class="col-12"> 
+                                <a class="w-100 btn btn-link link-underline link-underline-opacity-0" asp-page="@RouteConstants.AccountLogin" asp-route-returnUrl="@Model.ReturnUrl">@localizer["Login"]</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

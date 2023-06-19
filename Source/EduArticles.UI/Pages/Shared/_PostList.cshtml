@@ -1,0 +1,240 @@
+﻿@*@using Microsoft.AspNetCore.Localization;
+
+@model IEnumerable<EduArticles.Models.Entities.PostEntity>
+@inject IStringLocalizer<EduArticles.UI.Pages.Community.ViewModel> localizer
+
+
+@{
+    var currentLanguage = Context.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name;
+}
+
+
+<div class="flex col stretch">
+    <a class="add-button btn primary" asp-page="@RouteConstants.PostCreate">
+        @localizer["AddNewArticle"]
+    </a>
+    <div class="box outline round p-a-1 m-y-block-1">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var post in Model)
+            {
+                @if (post.Language == currentLanguage)
+                {
+                    <div class="flex row m-x-block-2">
+                        <a asp-page="@RouteConstants.PostView" asp-route-id="@post.Id">
+                            <img class="image" src="data:image;base64,@System.Convert.ToBase64String(post.Image)" style="width: 5.5rem; height: 4.5rem;" />
+                        </a>
+                        <div class="flex col stretch m-y-block-1">
+                            <div class="flex row col-center m-x-block-1">
+                                <h1 class="font big">
+                                    <a class="link" asp-page="@RouteConstants.PostView" asp-route-id="@post.Id">
+                                        @post.Title
+                                    </a>
+                                </h1>
+                                @if (@post.AssignedCategories != null && @post.AssignedCategories.Any())
+                                {
+                                    @foreach (var tag in @post.AssignedCategories.Split(' '))
+                                    {
+                                        <span class="category-chip">
+                                            @tag
+                                        </span>
+                                    }
+                                }
+                            </div>
+
+                            <div class="flex row col-center font small m-x-block-1">
+                                <a class="link" asp-page="@RouteConstants.CommunityView" asp-route-name="@post.Community.Name">
+                                    <strong>
+                                        @post.Community.Name
+                                    </strong>
+                                </a>
+                                <p>
+                                    •
+                                </p>
+                                <p>
+                                    @localizer["PostedBy"]
+                                    <a class="link" asp-page="@RouteConstants.Profile" asp-route-name="@post.User.UserName">
+                                        @post.User.UserName
+                                    </a>
+                                </p>
+                                <p>
+                                    •
+                                </p>
+                                <p>
+                                    @post.Created.ToString("HH:mm")
+                                </p>
+                            </div>
+                            <!-- Add the chips for AssignedTags here -->
+                            @if (@post.AssignedTags != null && @post.AssignedTags.Any())
+                            {
+                                <div class="flex row col-center m-x-block-1">
+                                    @foreach (var tag in @post.AssignedTags.Split(' '))
+                                    {
+                                        <div class="chip">
+                                            @tag
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            <div class="flex row col-center m-x-block-1">
+                                <p>
+                                    <strong>
+                                        @post.Replies.Count
+                                    </strong>
+                                    @(post.Replies.Count == 1 ? localizer["Reply"] : localizer["Replies"])
+                                </p>
+                                @if (User.GetUserId() == post.UserId)
+                                {
+                                    <a class="link warning" asp-page="@RouteConstants.PostEdit" asp-route-id="@post.Id">
+                                        @localizer["Edit"]
+                                    </a>
+                                    <a class="link danger" asp-page="@RouteConstants.PostDelete" asp-route-id="@post.Id">
+                                        @localizer["Delete"]
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (post != Model.Last())
+                {
+                    <hr class="hr" />
+                }
+            }
+        }
+        else
+        {
+            <p>
+                @localizer["NoPostsFound"].
+            </p>
+        }
+    </div>
+</div>
+
+*@
+
+@using Microsoft.AspNetCore.Localization;
+
+@model IEnumerable<EduArticles.Models.Entities.PostEntity>
+@inject IStringLocalizer<EduArticles.UI.Pages.Community.ViewModel> localizer
+
+
+@{
+    var currentLanguage = Context.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name;
+}
+
+
+<div class="container mt-4">
+    <a class="btn btn-primary mb-3 w-100" asp-page="@RouteConstants.PostCreate">
+        @localizer["AddNewArticle"]
+    </a>
+    <div class="card">
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var post in Model)
+                {
+                    @if (post.Language == currentLanguage)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <a class="text-decoration-none" asp-page="@RouteConstants.PostView" asp-route-id="@post.Id">
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(post.Image)" class="img-thumbnail" alt="Post Image">
+                                </a>
+                            </div>
+                            <div class="col-md-10">
+
+                                <div class="d-flex flex-wrap align-items-center">
+                                    <h5 class="card-title pe-2">
+                                        <a class="text-decoration-none" asp-page="@RouteConstants.PostView" asp-route-id="@post.Id">
+                                            @post.Title
+                                        </a>
+                                    </h5>
+                                    @if (@post.AssignedCategories != null && @post.AssignedCategories.Any())
+                                    {
+                                        @foreach (var tag in @post.AssignedCategories.Split(' '))
+                                        {
+                                            <span class="category-chip me-2 mb-2">
+                                                @tag
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                                <div class="d-flex flex-wrap align-items-center mt-2">
+                                    <a class="text-decoration-none" asp-page="@RouteConstants.CommunityView" asp-route-name="@post.Community.Name">
+                                        <strong>@post.Community.Name</strong>
+                                    </a>
+                                    <span class="mx-2">•</span>
+                                    <span class="me-2">@localizer["PostedBy"]</span>
+                                    <a class="text-decoration-none" asp-page="@RouteConstants.Profile" asp-route-name="@post.User.UserName">
+                                        @post.User.UserName
+                                    </a>
+                                    <span class="mx-2">•</span>
+                                    <span>@post.Created.ToString("HH:mm")</span>
+                                </div>
+                                @if (@post.AssignedTags != null && @post.AssignedTags.Any())
+                                {
+                                    <div class="d-flex flex-wrap align-items-center mt-2">
+                                        @foreach (var tag in @post.AssignedTags.Split(' '))
+                                        {
+                                            <span class="chip me-2 mb-2">
+                                                @tag
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <p class="mb-0">
+                                        <strong>@post.Replies.Count</strong>
+                                        @(post.Replies.Count == 1 ? localizer["Reply"] : localizer["Replies"])
+                                    </p>
+                                    @if (User.GetUserId() == post.UserId)
+                                    {
+                                        <div>
+                                            <a class="btn btn-warning btn-sm mr-2" asp-page="@RouteConstants.PostEdit" asp-route-id="@post.Id">
+                                                @localizer["Edit"]
+                                            </a>
+                                            <a class="btn btn-danger btn-sm" asp-page="@RouteConstants.PostDelete" asp-route-id="@post.Id">
+                                                @localizer["Delete"]
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (post != Model.Last())
+                    {
+                        <hr class="my-2">
+                    }
+                }
+            }
+            else
+            {
+                <p>@localizer["NoPostsFound"]</p>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .chip {
+        background-color: #fc7f03;
+        font-size: smaller;
+        padding: 5px;
+    }
+
+    .category-chip {
+        background-color: dodgerblue;
+        font-size: smaller;
+        padding: 5px;
+        border-radius: 15px;
+    }
+
+    .add-button {
+        max-width: fit-content;
+        margin: 10px;
+    }
+</style>

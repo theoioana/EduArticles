@@ -1,0 +1,51 @@
+﻿@page
+@model EduArticles.UI.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="row">
+    <div class="col-8">
+        <partial name="/Pages/Shared/_PostList.cshtml" model="Model.Feed" />
+    </div>
+    <div class="col-4">
+        <div class="card shadow w-100 mt-4">
+            <div class="card-body w-100">
+                <h5 class="card-title">
+                    Communities <a class="plus-icon" asp-page="@RouteConstants.CommunityCreate">&#x2b;</a>
+                </h5>
+                @if (Model.Communities.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var community in Model.Communities)
+                        {
+                            <li class="list-group-item">
+                                <a class="text-decoration-none" asp-page="@RouteConstants.CommunityView" asp-route-name="@community.Name">
+                                    @community.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No communities found.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .plus-icon {
+        display: inline-block !important;
+        margin-left: 5px;
+        max-width: fit-content;
+        max-height: fit-content;
+        text-decoration: none;
+        position: absolute;
+        color: dimgrey;
+    }
+</style>

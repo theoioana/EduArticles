@@ -1,0 +1,43 @@
+﻿@page "{name}"
+@model EduArticles.UI.Pages.Community.ViewModel
+@inject IStringLocalizer<EduArticles.UI.Pages.Community.ViewModel> localizer
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <partial name="/Pages/Shared/_PostList.cshtml" model="Model.Community.Posts" />
+        </div>
+        <div class="col-md-3">
+            <div class="sidebar p-4">
+                <img class="image rounded-circle mx-auto d-block mb-4" src="data:image;base64,@System.Convert.ToBase64String(Model.Community.Image)" style="width: 6rem; height: 6rem;" />
+                <div class="box outline round p-2">
+                    <h5 class="font-weight-bold">
+                        @localizer["AboutCommunity"]
+                    </h5>
+                    <p>
+                        @Model.Community.Description
+                    </p>
+                    <p>
+                        @localizer["Created"] @Model.Community.Created.LocalDateTime.ToShortDateString()
+                    </p>
+                    @if (User.GetUserId() == Model.Community.UserId)
+                    {
+                        <hr class="my-2" />
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-warning btn-sm mr-2 me-2" asp-page="@RouteConstants.CommunityEdit" asp-route-name="@Model.Name">
+                                @localizer["Edit"]
+                            </a>
+                            <a class="btn btn-danger btn-sm" asp-page="@RouteConstants.CommunityDelete" asp-route-name="@Model.Name">
+                                @localizer["Delete"]
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,34 @@
+﻿@page "{name}"
+@model EduArticles.UI.Pages.Community.EditModel
+@inject IStringLocalizer<EduArticles.UI.Pages.Community.EditModel> localizer
+@{
+    ViewData["Title"] = localizer["Edit"] + " " + Model.Name;
+}
+
+<div class="row">
+    <div class="col d-flex align-items-center justify-content-center">
+        <div class="card text-white bg-primary mb-3" style="min-width: 30rem; max-width: 60rem;">
+            <div class="card-header">
+                @localizer["Edit"] @Model.Name
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="Image">@localizer["Image"]</label>
+                        <input class="form-control" asp-for="Image" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description">@localizer["Description"]</label>
+                        <input class="form-control stretch" asp-for="Description" />
+                    </div>
+                    <div class="form-group">
+                        <div asp-validation-summary="All"></div>
+                        <button class="btn btn-success" type="submit">@localizer["Save"]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

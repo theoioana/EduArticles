@@ -1,0 +1,41 @@
+﻿@page
+@using Microsoft.AspNetCore.Localization;
+@model EduArticles.UI.Pages.Post.CreateModel
+@inject IStringLocalizer<EduArticles.UI.Pages.Post.CreateModel> localizer
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<div class="row">
+    <div class="col d-flex align-items-center justify-content-center">
+        <div class="card text-white bg-primary mb-3" style="min-width: 30rem; max-width: 60rem;">
+            <div class="card-header">
+                @localizer["CreatePost"]
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="Community">@localizer["Community"]</label>
+                        <select class="form-control" asp-for="Community" asp-items="@(new SelectList(Model.Communities, "Id", "Name"))"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image">@localizer["Image"]</label>
+                        <input class="form-control" asp-for="Image" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Title">@localizer["Title"]</label>
+                        <input class="form-control" asp-for="Title" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Text">@localizer["Text"]</label>
+                        <textarea class="form-control" asp-for="Text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div asp-validation-summary="All"></div>
+                        <button class="btn btn-success" type="submit">@localizer["CreatePost"]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

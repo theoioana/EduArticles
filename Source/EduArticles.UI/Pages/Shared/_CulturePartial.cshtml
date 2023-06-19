@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+
+@inject IOptions<RequestLocalizationOptions> LocalizationOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+
+    var cultureItems = LocalizationOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.Name })
+        .ToList();
+
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+}
+
+<div>
+    <form id="cultureForm" method="post">
+        <select class="form-select" name="culture" onchange="submitForm(this)">
+            @foreach (var cultureItem in cultureItems)
+            {
+                if (requestCulture.RequestCulture.UICulture.Name == cultureItem.Value)
+                {
+                    <option value="@cultureItem.Value" selected>@cultureItem.Text</option>
+                }
+                else
+                {
+                    <option value="@cultureItem.Value">@cultureItem.Text</option>
+                }
+            }
+        </select>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function submitForm(select) {
+        var culture = select.value;
+        var returnUrl = window.location.href;
+
+
+        var formData = new FormData();
+        formData.append('culture', culture);
+
+        $.ajax({
+            url: '/Culture/SetCulture',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                window.location.href = returnUrl;
+            }
+        });
+    }
+</script>

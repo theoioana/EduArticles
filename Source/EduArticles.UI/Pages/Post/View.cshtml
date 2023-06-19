@@ -1,0 +1,193 @@
+﻿@page "{id}"
+@model EduArticles.UI.Pages.Post.ViewModel
+@inject IStringLocalizer<EduArticles.UI.Pages.Post.ViewModel> localizer
+@{
+    ViewData["Title"] = Model.Post.Title;
+    var orderedReplies = Model.Post.Replies.OrderBy(x => x.Created);
+}
+
+<div class="row justify-content-center">
+    <div class="col post-container" style="max-width:50rem;">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <h1>
+                                    <a class="link-underline link-underline-opacity-0 text-body" asp-page="@RouteConstants.PostView" asp-route-id="@Model.Post.Id">
+                                        @Model.Post.Title
+                                    </a>
+                                </h1>
+                            </div>
+                            <div class="col d-flex align-items-center">
+                                @if (@Model.Post.AssignedCategories != null && @Model.Post.AssignedCategories.Any())
+                                {
+                                    @foreach (var tag in @Model.Post.AssignedCategories.Split(' '))
+                                    {
+                                        <span class="category-chip me-2">
+                                            @tag
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a class="link" asp-page="@RouteConstants.CommunityView" asp-route-name="@Model.Post.Community.Name">
+                                    <strong>
+                                        @Model.Post.Community.Name
+                                    </strong>
+                                </a>
+                                <span>
+                                    •
+                                </span>
+                                <span>
+                                    @localizer["PostedBy"]
+                                    <a class="link" asp-page="@RouteConstants.Profile" asp-route-name="@Model.Post.User.UserName">
+                                        @Model.Post.User.UserName
+                                    </a>
+                                </span>
+                                <span>
+                                    •
+                                </span>
+                                <span>
+                                    @Model.Post.Created.ToString("HH:mm")
+                                </span>
+                            </div>
+                        </div>
+                        @if (Model.Post.Image != null)
+                        {
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <img class="post-image" src="data:image/png;base64,@Convert.ToBase64String(Model.Post.Image)" alt="Post Image" />
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Post.Content))
+                        {
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    @Model.Post.Content
+                                </div>
+                            </div>
+                        }
+                        <!-- Add the chips for AssignedTags here -->
+                        @if (Model.Post.AssignedTags != null && Model.Post.AssignedTags.Any())
+                        {
+                            <div class="row mt-2">
+                                <div class="col">
+                                    @foreach (var tag in Model.Post.AssignedTags.Split(' '))
+                                    {
+                                        <span class="chip me-2">
+                                            @tag
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <div class="row gx-2 justify-content-end">
+                            <div class="col-auto">@Model.Post.Replies.Count</div>
+                            <div class="col-auto">@(Model.Post.Replies.Count == 1 ? localizer["Reply"] : localizer["Replies"])</div>
+                            <div class="col-auto">
+                                @if (User.GetUserId() == Model.Post.UserId)
+                                {
+                                    <a class="link-underline link-underline-opacity-0 me-2 text-warning" asp-page="@RouteConstants.PostEdit" asp-route-id="@Model.Post.Id">
+                                        @localizer["Edit"]
+                                    </a>
+                                    <a class="link-underline link-underline-opacity-0 text-danger" asp-page="@RouteConstants.PostDelete" asp-route-id="@Model.Post.Id">
+                                        @localizer["Delete"]
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <form method="post">
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" asp-for="Text" laceholder="@localizer["Reply"]..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-success" type="submit">@localizer["Reply"]</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (orderedReplies.Any())
+        {
+            @foreach (var reply in orderedReplies)
+            {
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row gx-2">
+                                    <div class="col-auto">
+                                        <a class="link" asp-page="@RouteConstants.Profile" asp-route-name="@reply.User.UserName">
+                                            @reply.User.UserName
+                                        </a>
+                                    </div>
+                                    <div class="col-auto">
+                                        •
+                                    </div>
+                                    <div class="col-auto">
+                                        @reply.Created.ToString("HH:mm")
+                                    </div>
+                                    @if (User.GetUserId() == reply.UserId)
+                                    {
+                                        <div class="col-auto">
+                                            <a class="link-underline link-underline-opacity-0 text-danger" asp-page="@RouteConstants.ReplyDelete" asp-route-id="@reply.Id">
+                                                @localizer["Delete"]
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        @reply.Content
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                if (reply != orderedReplies.Last())
+                {
+                    <hr class="hr" />
+                }
+            }
+        }
+    </div>
+</div>
+
+<style>
+    .chip {
+        background-color: #fc7f03;
+        padding: 5px;
+        font-size: smaller;
+    }
+
+    .category-chip {
+        background-color: dodgerblue;
+        font-size: smaller;
+        padding: 5px;
+        border-radius: 15px;
+    }
+
+    img {
+        max-width: 800px;
+        max-height: 800px;
+    }
+
+    .post-image {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
